@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Cliente } from '@/lib/types';
-import { formatarTelefone, getWhatsAppLink, getMensagem1, getMensagem2, diasDesdeContato, isAniversarioProximo, isAniversarioHoje, calcularIdade } from '@/lib/store';
+import { formatarTelefone, diasDesdeContato, isAniversarioProximo, isAniversarioHoje, calcularIdade } from '@/lib/store';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Eye, UserPlus, Clock } from 'lucide-react';
+import WhatsAppMessagePicker from './WhatsAppMessagePicker';
 
 interface ClientCardProps {
   cliente: Cliente;
@@ -13,24 +14,19 @@ interface ClientCardProps {
 }
 
 const ClientCard: React.FC<ClientCardProps> = ({ cliente, onDetail, onRegisterChild, onRegistrarContato }) => {
+  const [showWhatsApp, setShowWhatsApp] = useState(false);
   const dias = diasDesdeContato(cliente.ultimoContato);
   const aniversarioProximo = isAniversarioProximo(cliente.dataNascimentoCrianca);
   const aniversarioHoje = isAniversarioHoje(cliente.dataNascimentoCrianca);
 
-  const handleWhatsApp = () => {
-    const msg = cliente.primeiroContatoFeito
-      ? getMensagem2(cliente.nomeCliente)
-      : getMensagem1(cliente.nomeCliente);
-    window.open(getWhatsAppLink(cliente.telefone, msg), '_blank');
-  };
-
   return (
+    <>
     <div className="bg-card rounded-xl border shadow-sm p-4 space-y-3 hover:shadow-md transition-shadow animate-fade-in">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-foreground truncate">{cliente.nomeCliente}</h3>
           <button
-            onClick={handleWhatsApp}
+            onClick={() => setShowWhatsApp(true)}
             className="text-sm text-success flex items-center gap-1 hover:underline mt-0.5"
           >
             💬 {formatarTelefone(cliente.telefone)}
@@ -72,6 +68,13 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onDetail, onRegisterCh
         )}
       </div>
     </div>
+    <WhatsAppMessagePicker
+      cliente={cliente}
+      open={showWhatsApp}
+      onClose={() => setShowWhatsApp(false)}
+      onSent={onRegistrarContato}
+    />
+    </>
   );
 };
 
