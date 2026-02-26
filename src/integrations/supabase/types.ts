@@ -14,7 +14,188 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clientes: {
+        Row: {
+          codigo_cupom: string | null
+          cpf: string | null
+          cupom10_enviado: boolean
+          data_cadastro: string
+          data_compra: string | null
+          data_cupom: string | null
+          data_nascimento_crianca: string | null
+          data_primeiro_contato: string | null
+          email: string | null
+          id: string
+          nome_cliente: string
+          nome_crianca: string | null
+          observacoes: string | null
+          primeiro_contato_feito: boolean
+          telefone: string
+          ultimo_contato: string | null
+          vendedor_id: string | null
+        }
+        Insert: {
+          codigo_cupom?: string | null
+          cpf?: string | null
+          cupom10_enviado?: boolean
+          data_cadastro?: string
+          data_compra?: string | null
+          data_cupom?: string | null
+          data_nascimento_crianca?: string | null
+          data_primeiro_contato?: string | null
+          email?: string | null
+          id?: string
+          nome_cliente: string
+          nome_crianca?: string | null
+          observacoes?: string | null
+          primeiro_contato_feito?: boolean
+          telefone: string
+          ultimo_contato?: string | null
+          vendedor_id?: string | null
+        }
+        Update: {
+          codigo_cupom?: string | null
+          cpf?: string | null
+          cupom10_enviado?: boolean
+          data_cadastro?: string
+          data_compra?: string | null
+          data_cupom?: string | null
+          data_nascimento_crianca?: string | null
+          data_primeiro_contato?: string | null
+          email?: string | null
+          id?: string
+          nome_cliente?: string
+          nome_crianca?: string | null
+          observacoes?: string | null
+          primeiro_contato_feito?: boolean
+          telefone?: string
+          ultimo_contato?: string | null
+          vendedor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "vendedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      historico_contatos: {
+        Row: {
+          cliente_id: string
+          cupom_gerado: string | null
+          data_contato: string
+          id: string
+          mensagem_enviada: string | null
+          resposta_recebida: string | null
+          tipo_contato: string
+          vendedor_id: string | null
+        }
+        Insert: {
+          cliente_id: string
+          cupom_gerado?: string | null
+          data_contato?: string
+          id?: string
+          mensagem_enviada?: string | null
+          resposta_recebida?: string | null
+          tipo_contato?: string
+          vendedor_id?: string | null
+        }
+        Update: {
+          cliente_id?: string
+          cupom_gerado?: string | null
+          data_contato?: string
+          id?: string
+          mensagem_enviada?: string | null
+          resposta_recebida?: string | null
+          tipo_contato?: string
+          vendedor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_contatos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_contatos_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "vendedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lembretes: {
+        Row: {
+          cliente_id: string
+          data_lembrete: string
+          id: string
+          mensagem: string
+          status: string
+          tipo_lembrete: string
+          vendedor_id: string | null
+        }
+        Insert: {
+          cliente_id: string
+          data_lembrete: string
+          id?: string
+          mensagem: string
+          status?: string
+          tipo_lembrete?: string
+          vendedor_id?: string | null
+        }
+        Update: {
+          cliente_id?: string
+          data_lembrete?: string
+          id?: string
+          mensagem?: string
+          status?: string
+          tipo_lembrete?: string
+          vendedor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lembretes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lembretes_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "vendedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendedores: {
+        Row: {
+          ativo: boolean
+          data_cadastro: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          data_cadastro?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          data_cadastro?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
