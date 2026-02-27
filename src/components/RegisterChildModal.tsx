@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Cliente } from '@/lib/types';
-import { updateCliente, gerarCupom, getWhatsAppLink, getMensagem5 } from '@/lib/store';
+import { useUpdateCliente } from '@/hooks/useClientes';
+import { gerarCupom, getWhatsAppLink, getMensagem5 } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,6 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, Gift } from 'lucide-react';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -23,21 +23,24 @@ const RegisterChildModal: React.FC<Props> = ({ cliente, onClose, onSaved }) => {
   const [dataNascimento, setDataNascimento] = useState<Date | undefined>(
     cliente.dataNascimentoCrianca ? new Date(cliente.dataNascimentoCrianca) : undefined
   );
+  const updateCliente = useUpdateCliente();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!nomeCrianca.trim() || !dataNascimento) return;
     const cupom = gerarCupom(nomeCrianca);
     const dataStr = dataNascimento.toISOString().split('T')[0];
 
-    updateCliente(cliente.id, {
-      nomeCrianca: nomeCrianca.trim(),
-      dataNascimentoCrianca: dataStr,
-      cupom10Enviado: true,
-      dataCupom: new Date().toISOString().split('T')[0],
-      codigoCupom: cupom,
+    await updateCliente.mutateAsync({
+      id: cliente.id,
+      data: {
+        nomeCrianca: nomeCrianca.trim(),
+        dataNascimentoCrianca: dataStr,
+        cupom10Enviado: true,
+        dataCupom: new Date().toISOString().split('T')[0],
+        codigoCupom: cupom,
+      },
     });
 
-    // Open WhatsApp with coupon message
     const msg = getMensagem5(cliente.nomeCliente, nomeCrianca.trim(), cupom);
     window.open(getWhatsAppLink(cliente.telefone, msg), '_blank');
 
@@ -93,9 +96,9 @@ const RegisterChildModal: React.FC<Props> = ({ cliente, onClose, onSaved }) => {
           <Button
             className="gradient-zastras text-primary-foreground"
             onClick={handleSave}
-            disabled={!nomeCrianca.trim() || !dataNascimento}
+            disabled={!nomeCrianca.trim() || !dataNascimento || updateCliente.isPending}
           >
-            ✅ Confirmar e Enviar Cupom
+            {updateCliente.isPending ? 'Salvando...' : '✅ Confirmar e Enviar Cupom'}
           </Button>
         </DialogFooter>
       </DialogContent>

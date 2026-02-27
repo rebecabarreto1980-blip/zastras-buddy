@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { getClientesByVendedor, getClientes, getLembretes, formatarTelefone, getWhatsAppLink, getMensagem1, diasDesdeContato, isAniversarioHoje, isAniversarioProximo, calcularIdade, updateCliente, addHistorico, updateLembrete, getMensagem3 } from '@/lib/store';
-import { Cliente, Lembrete } from '@/lib/types';
+import { useClientes, useUpdateCliente, useAddHistorico } from '@/hooks/useClientes';
+import { formatarTelefone, getWhatsAppLink, getMensagem1, diasDesdeContato, isAniversarioHoje, isAniversarioProximo, calcularIdade, getMensagem3 } from '@/lib/store';
+import { Cliente } from '@/lib/types';
 import ClientCard from '@/components/ClientCard';
 import AddClientModal from '@/components/AddClientModal';
 import RegisterChildModal from '@/components/RegisterChildModal';
@@ -20,30 +21,21 @@ const Dashboard = () => {
   const [showAddClient, setShowAddClient] = useState(false);
   const [showRegisterChild, setShowRegisterChild] = useState<Cliente | null>(null);
   const [showDetail, setShowDetail] = useState<Cliente | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
 
-  const refresh = () => setRefreshKey(k => k + 1);
+  const vendedorId = user?.role === 'admin' ? undefined : user?.id;
+  const { data: allClientes = [], refetch } = useClientes(vendedorId);
+  const updateCliente = useUpdateCliente();
+  const addHistorico = useAddHistorico();
 
   const clientes = useMemo(() => {
-    if (!user) return [];
-    const all = user.role === 'admin' ? getClientes() : getClientesByVendedor(user.id);
-    if (!busca.trim()) return all;
+    if (!busca.trim()) return allClientes;
     const q = busca.toLowerCase();
-    return all.filter(c =>
+    return allClientes.filter(c =>
       c.nomeCliente.toLowerCase().includes(q) ||
       c.telefone.includes(q) ||
       c.nomeCrianca?.toLowerCase().includes(q)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, busca, refreshKey]);
-
-  const lembretes = useMemo(() => {
-    if (!user) return [];
-    const all = getLembretes();
-    if (user.role === 'admin') return all.filter(l => l.status === 'pendente');
-    return all.filter(l => l.vendedorId === user.id && l.status === 'pendente');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, refreshKey]);
+  }, [allClientes, busca]);
 
   const aniversariosHoje = useMemo(() => {
     return clientes.filter(c => c.dataNascimentoCrianca && isAniversarioHoje(c.dataNascimentoCrianca));
@@ -67,17 +59,15 @@ const Dashboard = () => {
 
   const handleLogout = () => { logout(); navigate('/'); };
 
-  const handleRegistrarContato = (cliente: Cliente) => {
-    updateCliente(cliente.id, { ultimoContato: new Date().toISOString().split('T')[0] });
-    if (user) {
-      addHistorico({
-        clienteId: cliente.id,
-        vendedorId: user.id,
-        dataContato: new Date().toISOString(),
-        tipoContato: 'whatsapp',
-      });
-    }
-    refresh();
+  const handleRegistrarContato = async (cliente: Cliente) => {
+    const now = new Date().toISOString().split('T')[0];
+    await updateCliente.mutateAsync({ id: cliente.id, data: { ultimoContato: now } });
+    await addHistorico.mutateAsync({
+      clienteId: cliente.id,
+      vendedorId: user.id,
+      tipoContato: 'whatsapp',
+    });
+    refetch();
   };
 
   const handleEnviarAniversario = (cliente: Cliente) => {
@@ -270,15 +260,18 @@ const Dashboard = () => {
                       <Button
                         size="sm"
                         className="gradient-zastras text-primary-foreground"
-                        onClick={() => {
+                        onClick={async () => {
                           const msg = getMensagem1(c.nomeCliente);
                           window.open(getWhatsAppLink(c.telefone, msg), '_blank');
-                          updateCliente(c.id, {
-                            primeiroContatoFeito: true,
-                            dataPrimeiroContato: new Date().toISOString().split('T')[0],
-                            ultimoContato: new Date().toISOString().split('T')[0],
+                          await updateCliente.mutateAsync({
+                            id: c.id,
+                            data: {
+                              primeiroContatoFeito: true,
+                              dataPrimeiroContato: new Date().toISOString().split('T')[0],
+                              ultimoContato: new Date().toISOString().split('T')[0],
+                            },
                           });
-                          refresh();
+                          refetch();
                         }}
                       >
                         Enviar Msg 1
@@ -313,21 +306,21 @@ const Dashboard = () => {
         <AddClientModal
           vendedorId={user.id}
           onClose={() => setShowAddClient(false)}
-          onSaved={() => { setShowAddClient(false); refresh(); }}
+          onSaved={() => { setShowAddClient(false); refetch(); }}
         />
       )}
       {showRegisterChild && (
         <RegisterChildModal
           cliente={showRegisterChild}
           onClose={() => setShowRegisterChild(null)}
-          onSaved={() => { setShowRegisterChild(null); refresh(); }}
+          onSaved={() => { setShowRegisterChild(null); refetch(); }}
         />
       )}
       {showDetail && (
         <ClientDetailModal
           cliente={showDetail}
           onClose={() => setShowDetail(null)}
-          onUpdated={() => { refresh(); }}
+          onUpdated={() => { refetch(); }}
         />
       )}
     </div>

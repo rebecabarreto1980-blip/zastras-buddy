@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { getVendedores, getClientes, addVendedor, removeVendedor, updateVendedor, formatarTelefone, getWhatsAppLink, getMensagem1 } from '@/lib/store';
+import { useVendedores, useAddVendedor, useRemoveVendedor } from '@/hooks/useVendedores';
+import { useClientes } from '@/hooks/useClientes';
+import { formatarTelefone, getWhatsAppLink, getMensagem1 } from '@/lib/store';
 import ClientDetailModal from '@/components/ClientDetailModal';
 import { Cliente } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -13,17 +15,18 @@ import { Store, LogOut, Users, UserPlus, Search, Eye, MessageSquare, Trash2, Edi
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [refreshKey, setRefreshKey] = useState(0);
   const [busca, setBusca] = useState('');
   const [showAddVendedor, setShowAddVendedor] = useState(false);
   const [novoVendedorNome, setNovoVendedorNome] = useState('');
   const [showDetail, setShowDetail] = useState<Cliente | null>(null);
   const [expandedVendedor, setExpandedVendedor] = useState<string | null>(null);
 
-  const refresh = () => setRefreshKey(k => k + 1);
+  const { data: allVendedores = [], refetch: refetchVendedores } = useVendedores();
+  const { data: todosClientes = [], refetch: refetchClientes } = useClientes();
+  const addVendedorMutation = useAddVendedor();
+  const removeVendedorMutation = useRemoveVendedor();
 
-  const vendedores = useMemo(() => getVendedores().filter(v => v.ativo), [refreshKey]);
-  const todosClientes = useMemo(() => getClientes(), [refreshKey]);
+  const vendedores = useMemo(() => allVendedores.filter(v => v.ativo), [allVendedores]);
 
   const clientesFiltrados = useMemo(() => {
     if (!busca.trim()) return todosClientes;
@@ -42,21 +45,21 @@ const AdminDashboard = () => {
 
   const handleLogout = () => { logout(); navigate('/'); };
 
-  const handleAddVendedor = () => {
+  const handleAddVendedor = async () => {
     if (novoVendedorNome.trim()) {
-      addVendedor(novoVendedorNome.trim());
+      await addVendedorMutation.mutateAsync(novoVendedorNome.trim());
       setNovoVendedorNome('');
       setShowAddVendedor(false);
-      refresh();
     }
   };
 
-  const handleRemoveVendedor = (id: string) => {
+  const handleRemoveVendedor = async (id: string) => {
     if (confirm('Remover este vendedor?')) {
-      removeVendedor(id);
-      refresh();
+      await removeVendedorMutation.mutateAsync(id);
     }
   };
+
+  const refresh = () => { refetchVendedores(); refetchClientes(); };
 
   const totalClientes = todosClientes.length;
   const totalComCrianca = todosClientes.filter(c => c.nomeCrianca).length;
