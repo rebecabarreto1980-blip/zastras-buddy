@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { getVendedores } from '@/lib/store';
+import { useVendedores } from '@/hooks/useVendedores';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Store, Sparkles } from 'lucide-react';
@@ -10,7 +10,8 @@ const Login = () => {
   const [selectedId, setSelectedId] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
-  const vendedores = getVendedores().filter(v => v.ativo);
+  const { data: vendedores = [], isLoading } = useVendedores();
+  const activeVendedores = vendedores.filter(v => v.ativo && v.nome !== 'ADM');
 
   const handleEntrar = () => {
     if (!selectedId) return;
@@ -18,7 +19,7 @@ const Login = () => {
       login({ id: 'admin', nome: 'Administrador', role: 'admin' });
       navigate('/admin');
     } else {
-      const v = vendedores.find(v => v.id === selectedId);
+      const v = activeVendedores.find(v => v.id === selectedId);
       if (v) {
         login({ id: v.id, nome: v.nome, role: 'vendedor' });
         navigate('/dashboard');
@@ -55,10 +56,10 @@ const Login = () => {
 
             <Select value={selectedId} onValueChange={setSelectedId}>
               <SelectTrigger className="h-12 text-base border-2 border-border focus:border-primary">
-                <SelectValue placeholder="Selecione seu nome" />
+                <SelectValue placeholder={isLoading ? "Carregando..." : "Selecione seu nome"} />
               </SelectTrigger>
               <SelectContent>
-                {vendedores.map(v => (
+                {activeVendedores.map(v => (
                   <SelectItem key={v.id} value={v.id} className="text-base py-3">
                     {v.nome} (vendedor{v.nome.endsWith('o') || v.nome === 'João' ? '' : 'a'})
                   </SelectItem>

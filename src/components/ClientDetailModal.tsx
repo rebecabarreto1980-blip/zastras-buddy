@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Cliente } from '@/lib/types';
-import { updateCliente, formatarTelefone, getWhatsAppLink, getMensagem1, getMensagem2, calcularIdade, diasDesdeContato, gerarCupom, getMensagem5 } from '@/lib/store';
+import { useUpdateCliente } from '@/hooks/useClientes';
+import { formatarTelefone, getWhatsAppLink, getMensagem1, getMensagem2, calcularIdade, diasDesdeContato, gerarCupom, getMensagem5 } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, MessageCircle, Save, Gift, Phone } from 'lucide-react';
+import { CalendarIcon, Save, Gift, Phone } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -21,26 +22,27 @@ interface Props {
 
 const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdated }) => {
   const [c, setC] = useState(initial);
+  const updateCliente = useUpdateCliente();
 
-  const handleSave = () => {
-    updateCliente(c.id, c);
+  const handleSave = async () => {
+    await updateCliente.mutateAsync({ id: c.id, data: c });
     onUpdated();
   };
 
-  const handleRegistrarContato = () => {
+  const handleRegistrarContato = async () => {
     const now = new Date().toISOString().split('T')[0];
     setC(prev => ({ ...prev, ultimoContato: now }));
-    updateCliente(c.id, { ultimoContato: now });
+    await updateCliente.mutateAsync({ id: c.id, data: { ultimoContato: now } });
     onUpdated();
   };
 
-  const handleEnviarCupom = () => {
+  const handleEnviarCupom = async () => {
     if (!c.nomeCrianca) return;
     const cupom = gerarCupom(c.nomeCrianca);
     const now = new Date().toISOString().split('T')[0];
     const updates = { cupom10Enviado: true, dataCupom: now, codigoCupom: cupom };
     setC(prev => ({ ...prev, ...updates }));
-    updateCliente(c.id, updates);
+    await updateCliente.mutateAsync({ id: c.id, data: updates });
     const msg = getMensagem5(c.nomeCliente, c.nomeCrianca, cupom);
     window.open(getWhatsAppLink(c.telefone, msg), '_blank');
     onUpdated();
@@ -175,8 +177,12 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
           </section>
 
           {/* Save */}
-          <Button className="w-full gradient-zastras text-primary-foreground h-12 font-bold" onClick={handleSave}>
-            <Save className="w-4 h-4 mr-2" /> Salvar Alterações
+          <Button
+            className="w-full gradient-zastras text-primary-foreground h-12 font-bold"
+            onClick={handleSave}
+            disabled={updateCliente.isPending}
+          >
+            <Save className="w-4 h-4 mr-2" /> {updateCliente.isPending ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
         </div>
       </DialogContent>

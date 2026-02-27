@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { addCliente } from '@/lib/store';
+import { useAddCliente } from '@/hooks/useClientes';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -17,10 +17,11 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
   const [observacoes, setObservacoes] = useState('');
+  const addCliente = useAddCliente();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!nome.trim() || !telefone.trim()) return;
-    addCliente({
+    await addCliente.mutateAsync({
       nomeCliente: nome.trim(),
       telefone: telefone.replace(/\D/g, ''),
       email: email.trim() || undefined,
@@ -58,8 +59,8 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancelar</Button>
-          <Button className="gradient-zastras text-primary-foreground" onClick={handleSave} disabled={!nome.trim() || !telefone.trim()}>
-            Salvar
+          <Button className="gradient-zastras text-primary-foreground" onClick={handleSave} disabled={!nome.trim() || !telefone.trim() || addCliente.isPending}>
+            {addCliente.isPending ? 'Salvando...' : 'Salvar'}
           </Button>
         </DialogFooter>
       </DialogContent>
