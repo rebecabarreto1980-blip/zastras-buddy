@@ -4,7 +4,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useVendedores } from '@/hooks/useVendedores';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Store, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import zastrasLogo from '@/assets/zastras-logo.png';
 
 const Login = () => {
   const [selectedId, setSelectedId] = useState('');
