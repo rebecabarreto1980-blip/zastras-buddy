@@ -56,6 +56,10 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
             <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="email@exemplo.com" className="h-11 mt-1" />
           </div>
           <div>
+            <Label className="text-sm font-semibold">Produtos comprados</Label>
+            <Input value={produtos} onChange={e => setProdutos(e.target.value)} placeholder="Ex: Camiseta infantil, bermuda..." className="h-11 mt-1" />
+          </div>
+          <div>
             <Label className="text-sm font-semibold">Observações</Label>
             <Textarea value={observacoes} onChange={e => setObservacoes(e.target.value)} placeholder="Notas sobre o cliente..." className="mt-1" rows={3} />
           </div>
