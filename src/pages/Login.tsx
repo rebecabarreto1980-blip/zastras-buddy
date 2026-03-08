@@ -4,7 +4,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useVendedores } from '@/hooks/useVendedores';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Store, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import zastrasLogo from '@/assets/zastras-logo.png';
 
 const Login = () => {
   const [selectedId, setSelectedId] = useState('');
@@ -33,8 +34,8 @@ const Login = () => {
         <div className="bg-card rounded-2xl shadow-zastras-lg p-8 space-y-6">
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="mx-auto w-20 h-20 rounded-2xl gradient-zastras flex items-center justify-center shadow-zastras mb-4">
-              <Store className="w-10 h-10 text-primary-foreground" />
+            <div className="mx-auto w-24 h-24 rounded-2xl overflow-hidden shadow-zastras mb-4">
+              <img src={zastrasLogo} alt="Zastras Logo" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-3xl font-display font-bold text-gradient-zastras">ZASTRAS</h1>
             <p className="text-muted-foreground text-sm font-medium">Shopping Cidade Jardim</p>
