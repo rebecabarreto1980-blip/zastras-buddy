@@ -19,6 +19,8 @@ export function mapClienteRow(row: any): Cliente {
     cupom10Enviado: row.cupom10_enviado,
     dataCupom: row.data_cupom || undefined,
     codigoCupom: row.codigo_cupom || undefined,
+    produtos: row.produtos || undefined,
+    dataCompra: row.data_compra || undefined,
   };
 }
 
