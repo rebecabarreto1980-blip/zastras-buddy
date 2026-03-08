@@ -30,6 +30,7 @@ export type Database = {
           nome_crianca: string | null
           observacoes: string | null
           primeiro_contato_feito: boolean
+          produtos: string | null
           telefone: string
           ultimo_contato: string | null
           vendedor_id: string | null
@@ -49,6 +50,7 @@ export type Database = {
           nome_crianca?: string | null
           observacoes?: string | null
           primeiro_contato_feito?: boolean
+          produtos?: string | null
           telefone: string
           ultimo_contato?: string | null
           vendedor_id?: string | null
@@ -68,6 +70,7 @@ export type Database = {
           nome_crianca?: string | null
           observacoes?: string | null
           primeiro_contato_feito?: boolean
+          produtos?: string | null
           telefone?: string
           ultimo_contato?: string | null
           vendedor_id?: string | null
