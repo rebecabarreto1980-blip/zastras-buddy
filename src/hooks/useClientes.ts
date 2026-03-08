@@ -39,6 +39,8 @@ function toDbRow(data: Partial<Cliente>): Record<string, any> {
   if (data.cupom10Enviado !== undefined) map.cupom10_enviado = data.cupom10Enviado;
   if (data.dataCupom !== undefined) map.data_cupom = data.dataCupom || null;
   if (data.codigoCupom !== undefined) map.codigo_cupom = data.codigoCupom || null;
+  if (data.produtos !== undefined) map.produtos = data.produtos || null;
+  if (data.dataCompra !== undefined) map.data_compra = data.dataCompra || null;
   return map;
 }
 

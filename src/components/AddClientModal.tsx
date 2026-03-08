@@ -16,6 +16,7 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
+  const [produtos, setProdutos] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const addCliente = useAddCliente();
 
@@ -26,6 +27,8 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
       telefone: telefone.replace(/\D/g, ''),
       email: email.trim() || undefined,
       vendedorId,
+      produtos: produtos.trim() || undefined,
+      dataCompra: new Date().toISOString().split('T')[0],
       observacoes: observacoes.trim() || undefined,
       primeiroContatoFeito: false,
       cupom10Enviado: false,
