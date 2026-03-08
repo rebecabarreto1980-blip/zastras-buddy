@@ -16,6 +16,7 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
+  const [produtos, setProdutos] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const addCliente = useAddCliente();
 
@@ -26,6 +27,8 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
       telefone: telefone.replace(/\D/g, ''),
       email: email.trim() || undefined,
       vendedorId,
+      produtos: produtos.trim() || undefined,
+      dataCompra: new Date().toISOString().split('T')[0],
       observacoes: observacoes.trim() || undefined,
       primeiroContatoFeito: false,
       cupom10Enviado: false,
@@ -51,6 +54,10 @@ const AddClientModal: React.FC<Props> = ({ vendedorId, onClose, onSaved }) => {
           <div>
             <Label className="text-sm font-semibold">Email</Label>
             <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="email@exemplo.com" className="h-11 mt-1" />
+          </div>
+          <div>
+            <Label className="text-sm font-semibold">Produtos comprados</Label>
+            <Input value={produtos} onChange={e => setProdutos(e.target.value)} placeholder="Ex: Camiseta infantil, bermuda..." className="h-11 mt-1" />
           </div>
           <div>
             <Label className="text-sm font-semibold">Observações</Label>

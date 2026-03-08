@@ -21,6 +21,8 @@ export interface Cliente {
   cupom10Enviado: boolean;
   dataCupom?: string;
   codigoCupom?: string;
+  produtos?: string;
+  dataCompra?: string;
 }
 
 export interface HistoricoContato {
