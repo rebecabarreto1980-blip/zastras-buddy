@@ -1,8 +1,9 @@
 import React from 'react';
 import { Cliente } from '@/lib/types';
-import { getWhatsAppLink, getMensagem1, getMensagem2, getMensagem3, getMensagem4 } from '@/lib/store';
+import { getWhatsAppLink, getMensagem1, getMensagem2, getMensagem3, getMensagem4, getMensagemDesconto } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { MessageCircle, Gift, ShoppingBag, Sparkles, Baby } from 'lucide-react';
+import { MessageCircle, Gift, ShoppingBag, Sparkles, Baby, Percent } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 interface Props {
   cliente: Cliente;
