@@ -13,6 +13,8 @@ interface Props {
 }
 
 const WhatsAppMessagePicker: React.FC<Props> = ({ cliente, open, onClose, onSent }) => {
+  const { user } = useAuth();
+  const nomeVendedor = user?.nome || 'a equipe';
   const options = [
     {
       label: '🛍️ Obrigada pela compra',
@@ -25,6 +27,12 @@ const WhatsAppMessagePicker: React.FC<Props> = ({ cliente, open, onClose, onSent
       description: 'Coleta nome/aniversário + cupom 10%',
       icon: Baby,
       getMessage: () => getMensagem2(cliente.nomeCliente),
+    },
+    {
+      label: '💰 Desconto',
+      description: 'Follow-up + 10% desconto retorno',
+      icon: Percent,
+      getMessage: () => getMensagemDesconto(nomeVendedor),
     },
     ...(cliente.nomeCrianca
       ? [
