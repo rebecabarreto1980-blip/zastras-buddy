@@ -1,8 +1,9 @@
 import React from 'react';
 import { Cliente } from '@/lib/types';
-import { getWhatsAppLink, getMensagem1, getMensagem2, getMensagem3, getMensagem4 } from '@/lib/store';
+import { getWhatsAppLink, getMensagem1, getMensagem2, getMensagem3, getMensagem4, getMensagemDesconto } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { MessageCircle, Gift, ShoppingBag, Sparkles, Baby } from 'lucide-react';
+import { MessageCircle, Gift, ShoppingBag, Sparkles, Baby, Percent } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 interface Props {
   cliente: Cliente;
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const WhatsAppMessagePicker: React.FC<Props> = ({ cliente, open, onClose, onSent }) => {
+  const { user } = useAuth();
+  const nomeVendedor = user?.nome || 'a equipe';
   const options = [
     {
       label: '🛍️ Obrigada pela compra',
@@ -24,6 +27,12 @@ const WhatsAppMessagePicker: React.FC<Props> = ({ cliente, open, onClose, onSent
       description: 'Coleta nome/aniversário + cupom 10%',
       icon: Baby,
       getMessage: () => getMensagem2(cliente.nomeCliente),
+    },
+    {
+      label: '💰 Desconto',
+      description: 'Follow-up + 10% desconto retorno',
+      icon: Percent,
+      getMessage: () => getMensagemDesconto(nomeVendedor),
     },
     ...(cliente.nomeCrianca
       ? [

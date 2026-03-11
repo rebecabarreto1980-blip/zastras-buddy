@@ -116,6 +116,9 @@ export function getMensagem4(nomeCliente: string, nomeCrianca?: string): string 
 export function getMensagem5(nomeCliente: string, nomeCrianca: string, cupom: string): string {
   return `Recebemos, ${nomeCliente}! ✅\nDados do ${nomeCrianca} cadastrados com sucesso!\nAqui está seu cupom de 10%: ${cupom}\nÉ só mostrar no caixa da loja! 🎁\nBeijos, equipe ZASTRAS 💜`;
 }
+export function getMensagemDesconto(nomeVendedor: string): string {
+  return `Olá, tudo bem?\n\nAqui é ${nomeVendedor} da Zastras do Shopping Cidade Jardim.\n\nQueria saber se o presente que você escolheu fez sucesso por aí 😊\n\nQuando estiver pelo shopping, passe no quiosque para ver as novidades, sempre temos coisas bem legais chegando por aqui.\n\nAté o fim de março, nossos clientes que retornarem ganham 10% de desconto.\n\nE, se for mais fácil, também temos delivery.\n\nSerá um prazer receber você por aqui! ✨`;
+}
 
 // Helpers
 export function calcularIdade(dataNascimento: string): number {
