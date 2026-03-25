@@ -38,6 +38,13 @@ const AdminDashboard = () => {
     );
   }, [todosClientes, busca]);
 
+  const cadastrosOntem = useMemo(() => {
+    const ontem = new Date();
+    ontem.setDate(ontem.getDate() - 1);
+    const ontemStr = ontem.toISOString().split('T')[0];
+    return todosClientes.filter(c => c.dataCadastro === ontemStr).length;
+  }, [todosClientes]);
+
   if (!user || user.role !== 'admin') {
     navigate('/');
     return null;
@@ -87,10 +94,14 @@ const AdminDashboard = () => {
 
       <div className="max-w-4xl mx-auto px-4 mt-6 space-y-6">
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 animate-fade-in">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 animate-fade-in">
           <div className="bg-card rounded-xl p-4 shadow-sm border text-center">
             <p className="text-2xl font-bold text-primary">{totalClientes}</p>
             <p className="text-xs text-muted-foreground">Total Clientes</p>
+          </div>
+          <div className="bg-card rounded-xl p-4 shadow-sm border text-center">
+            <p className="text-2xl font-bold text-accent-foreground">{cadastrosOntem}</p>
+            <p className="text-xs text-muted-foreground">Cadastros Ontem</p>
           </div>
           <div className="bg-card rounded-xl p-4 shadow-sm border text-center">
             <p className="text-2xl font-bold text-secondary">{vendedores.length}</p>
