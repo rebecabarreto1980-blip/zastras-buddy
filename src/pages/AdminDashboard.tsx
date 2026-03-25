@@ -72,13 +72,6 @@ const AdminDashboard = () => {
   const totalComCrianca = todosClientes.filter(c => c.nomeCrianca).length;
   const totalPendentes = todosClientes.filter(c => !c.primeiroContatoFeito).length;
 
-  const cadastrosOntem = useMemo(() => {
-    const ontem = new Date();
-    ontem.setDate(ontem.getDate() - 1);
-    const ontemStr = ontem.toISOString().split('T')[0];
-    return todosClientes.filter(c => c.dataCadastro === ontemStr).length;
-  }, [todosClientes]);
-
   return (
     <div className="min-h-screen bg-background pb-8">
       {/* Header */}
