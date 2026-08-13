@@ -114,3 +114,52 @@ export function useAddHistorico() {
     },
   });
 }
+
+export function mapCompraRow(row: any): Compra {
+  return {
+    id: row.id,
+    clienteId: row.cliente_id,
+    dataCompra: row.data_compra,
+    produtos: row.produtos || undefined,
+    valor: row.valor ?? undefined,
+    notaCupom: row.nota_cupom || undefined,
+    createdAt: row.created_at,
+  };
+}
+
+export function useCompras(clienteId?: string) {
+  return useQuery({
+    queryKey: ['compras', clienteId],
+    queryFn: async () => {
+      let query = supabase.from('compras').select('*').order('data_compra', { ascending: false });
+      if (clienteId) {
+        query = query.eq('cliente_id', clienteId);
+      }
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data || []).map(mapCompraRow);
+    },
+  });
+}
+
+export function useAddCompra() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (compra: Omit<Compra, 'id' | 'createdAt'>) => {
+      const { data, error } = await supabase
+        .from('compras')
+        .insert({
+          cliente_id: compra.clienteId,
+          data_compra: compra.dataCompra,
+          produtos: compra.produtos || null,
+          valor: compra.valor ?? null,
+          nota_cupom: compra.notaCupom || null,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return mapCompraRow(data);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['compras'] }),
+  });
+}
