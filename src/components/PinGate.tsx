@@ -26,7 +26,7 @@ export default function PinGate({ children }: { children: React.ReactNode }) {
   }, []);
 
   const desbloquear = async () => {
-    if (pin.length !== 6) return;
+    if (pin.length !== 8) return;
     setLoading(true);
     setErro('');
     const { error } = await supabase.auth.signInWithPassword({ email: STORE_EMAIL, password: pin });
@@ -56,13 +56,13 @@ export default function PinGate({ children }: { children: React.ReactNode }) {
 
           <div className="flex justify-center">
             <InputOTP
-              maxLength={6}
+              maxLength={8}
               value={pin}
               onChange={(v) => { setPin(v.replace(/\D/g, '')); setErro(''); }}
               inputMode="numeric"
             >
               <InputOTPGroup>
-                {[0, 1, 2, 3, 4, 5].map(i => (
+                {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
                   <InputOTPSlot key={i} index={i} className="h-12 w-10 text-lg" />
                 ))}
               </InputOTPGroup>
@@ -73,7 +73,7 @@ export default function PinGate({ children }: { children: React.ReactNode }) {
 
           <Button
             onClick={desbloquear}
-            disabled={pin.length !== 6 || loading}
+            disabled={pin.length !== 8 || loading}
             className="w-full h-12 text-base font-bold gradient-zastras text-primary-foreground shadow-zastras hover:opacity-90 disabled:opacity-40"
           >
             {loading ? 'Verificando...' : 'DESBLOQUEAR'}
