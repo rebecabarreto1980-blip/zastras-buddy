@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { supabase } from '@/integrations/supabase/client';
 import { Store, LogOut, Users, UserPlus, Search, Eye, MessageSquare, Trash2, Edit, ChevronDown, ChevronUp } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -51,6 +52,12 @@ const AdminDashboard = () => {
   }
 
   const handleLogout = () => { logout(); navigate('/'); };
+
+  const handleSignOutDevice = async () => {
+    if (!confirm('Sair do app neste dispositivo? Será necessário digitar o PIN novamente.')) return;
+    logout();
+    await supabase.auth.signOut();
+  };
 
   const handleAddVendedor = async () => {
     if (novoVendedorNome.trim()) {
@@ -252,6 +259,15 @@ const AdminDashboard = () => {
             </div>
           </div>
         </section>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 mt-8 text-center">
+        <button
+          onClick={handleSignOutDevice}
+          className="text-xs text-muted-foreground underline underline-offset-4 hover:text-destructive transition-colors"
+        >
+          Sair do app neste dispositivo
+        </button>
       </div>
 
       {/* Add Vendedor Dialog */}
