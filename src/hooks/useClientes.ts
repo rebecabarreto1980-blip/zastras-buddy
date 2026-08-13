@@ -45,6 +45,10 @@ function toDbRow(data: Partial<Cliente>): Record<string, any> {
   if (data.codigoCupom !== undefined) map.codigo_cupom = data.codigoCupom || null;
   if (data.produtos !== undefined) map.produtos = data.produtos || null;
   if (data.dataCompra !== undefined) map.data_compra = data.dataCompra || null;
+  if (data.segmento !== undefined) map.segmento = data.segmento || null;
+  if (data.valorTotalGasto !== undefined) map.valor_total_gasto = data.valorTotalGasto ?? null;
+  if (data.ultimaCompra !== undefined) map.ultima_compra = data.ultimaCompra || null;
+  if (data.qtdCompras !== undefined) map.qtd_compras = data.qtdCompras ?? null;
   return map;
 }
 
