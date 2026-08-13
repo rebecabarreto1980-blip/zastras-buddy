@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Cliente } from '@/lib/types';
+import { Cliente, Compra } from '@/lib/types';
 
 export function mapClienteRow(row: any): Cliente {
   return {
@@ -21,6 +21,10 @@ export function mapClienteRow(row: any): Cliente {
     codigoCupom: row.codigo_cupom || undefined,
     produtos: row.produtos || undefined,
     dataCompra: row.data_compra || undefined,
+    segmento: row.segmento || undefined,
+    valorTotalGasto: row.valor_total_gasto ?? undefined,
+    ultimaCompra: row.ultima_compra || undefined,
+    qtdCompras: row.qtd_compras ?? undefined,
   };
 }
 

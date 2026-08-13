@@ -23,6 +23,20 @@ export interface Cliente {
   codigoCupom?: string;
   produtos?: string;
   dataCompra?: string;
+  segmento?: 'Elite' | 'VIP' | 'Fiel' | 'Ocasional' | 'Esporádico';
+  valorTotalGasto?: number;
+  ultimaCompra?: string;
+  qtdCompras?: number;
+}
+
+export interface Compra {
+  id: string;
+  clienteId: string;
+  dataCompra: string;
+  produtos?: string;
+  valor?: number;
+  notaCupom?: string;
+  createdAt: string;
 }
 
 export interface HistoricoContato {
