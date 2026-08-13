@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Cliente } from '@/lib/types';
+import { Cliente, Compra } from '@/lib/types';
 
 export function mapClienteRow(row: any): Cliente {
   return {
@@ -21,6 +21,10 @@ export function mapClienteRow(row: any): Cliente {
     codigoCupom: row.codigo_cupom || undefined,
     produtos: row.produtos || undefined,
     dataCompra: row.data_compra || undefined,
+    segmento: row.segmento || undefined,
+    valorTotalGasto: row.valor_total_gasto ?? undefined,
+    ultimaCompra: row.ultima_compra || undefined,
+    qtdCompras: row.qtd_compras ?? undefined,
   };
 }
 
@@ -41,6 +45,10 @@ function toDbRow(data: Partial<Cliente>): Record<string, any> {
   if (data.codigoCupom !== undefined) map.codigo_cupom = data.codigoCupom || null;
   if (data.produtos !== undefined) map.produtos = data.produtos || null;
   if (data.dataCompra !== undefined) map.data_compra = data.dataCompra || null;
+  if (data.segmento !== undefined) map.segmento = data.segmento || null;
+  if (data.valorTotalGasto !== undefined) map.valor_total_gasto = data.valorTotalGasto ?? null;
+  if (data.ultimaCompra !== undefined) map.ultima_compra = data.ultimaCompra || null;
+  if (data.qtdCompras !== undefined) map.qtd_compras = data.qtdCompras ?? null;
   return map;
 }
 
@@ -104,5 +112,54 @@ export function useAddHistorico() {
         });
       if (error) throw error;
     },
+  });
+}
+
+export function mapCompraRow(row: any): Compra {
+  return {
+    id: row.id,
+    clienteId: row.cliente_id,
+    dataCompra: row.data_compra,
+    produtos: row.produtos || undefined,
+    valor: row.valor ?? undefined,
+    notaCupom: row.nota_cupom || undefined,
+    createdAt: row.created_at,
+  };
+}
+
+export function useCompras(clienteId?: string) {
+  return useQuery({
+    queryKey: ['compras', clienteId],
+    queryFn: async () => {
+      let query = supabase.from('compras').select('*').order('data_compra', { ascending: false });
+      if (clienteId) {
+        query = query.eq('cliente_id', clienteId);
+      }
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data || []).map(mapCompraRow);
+    },
+  });
+}
+
+export function useAddCompra() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (compra: Omit<Compra, 'id' | 'createdAt'>) => {
+      const { data, error } = await supabase
+        .from('compras')
+        .insert({
+          cliente_id: compra.clienteId,
+          data_compra: compra.dataCompra,
+          produtos: compra.produtos || null,
+          valor: compra.valor ?? null,
+          nota_cupom: compra.notaCupom || null,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return mapCompraRow(data);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['compras'] }),
   });
 }

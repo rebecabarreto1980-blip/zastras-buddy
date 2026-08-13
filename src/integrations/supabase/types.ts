@@ -31,8 +31,12 @@ export type Database = {
           observacoes: string | null
           primeiro_contato_feito: boolean
           produtos: string | null
+          qtd_compras: number | null
+          segmento: string | null
           telefone: string
+          ultima_compra: string | null
           ultimo_contato: string | null
+          valor_total_gasto: number | null
           vendedor_id: string | null
         }
         Insert: {
@@ -51,8 +55,12 @@ export type Database = {
           observacoes?: string | null
           primeiro_contato_feito?: boolean
           produtos?: string | null
+          qtd_compras?: number | null
+          segmento?: string | null
           telefone: string
+          ultima_compra?: string | null
           ultimo_contato?: string | null
+          valor_total_gasto?: number | null
           vendedor_id?: string | null
         }
         Update: {
@@ -71,8 +79,12 @@ export type Database = {
           observacoes?: string | null
           primeiro_contato_feito?: boolean
           produtos?: string | null
+          qtd_compras?: number | null
+          segmento?: string | null
           telefone?: string
+          ultima_compra?: string | null
           ultimo_contato?: string | null
+          valor_total_gasto?: number | null
           vendedor_id?: string | null
         }
         Relationships: [
@@ -81,6 +93,44 @@ export type Database = {
             columns: ["vendedor_id"]
             isOneToOne: false
             referencedRelation: "vendedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      compras: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          data_compra: string
+          id: string
+          nota_cupom: string | null
+          produtos: string | null
+          valor: number | null
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          data_compra: string
+          id?: string
+          nota_cupom?: string | null
+          produtos?: string | null
+          valor?: number | null
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          data_compra?: string
+          id?: string
+          nota_cupom?: string | null
+          produtos?: string | null
+          valor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compras_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
             referencedColumns: ["id"]
           },
         ]
