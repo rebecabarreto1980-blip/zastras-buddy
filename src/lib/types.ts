@@ -23,7 +23,7 @@ export interface Cliente {
   codigoCupom?: string;
   produtos?: string;
   dataCompra?: string;
-  segmento?: 'Elite' | 'VIP' | 'Fiel' | 'Ocasional' | 'Esporádico';
+  segmento?: string;
   valorTotalGasto?: number;
   ultimaCompra?: string;
   qtdCompras?: number;
