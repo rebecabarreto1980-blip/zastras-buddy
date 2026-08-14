@@ -5,10 +5,12 @@ import { useVendedores, useAddVendedor, useRemoveVendedor } from '@/hooks/useVen
 import { useClientes } from '@/hooks/useClientes';
 import { formatarTelefone, getWhatsAppLink, getMensagem1 } from '@/lib/store';
 import ClientDetailModal from '@/components/ClientDetailModal';
+import SegmentoBadge, { SEGMENTOS } from '@/components/SegmentoBadge';
 import { Cliente } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { Store, LogOut, Users, UserPlus, Search, Eye, MessageSquare, Trash2, Edit, ChevronDown, ChevronUp } from 'lucide-react';
@@ -17,6 +19,7 @@ const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [busca, setBusca] = useState('');
+  const [filtroSegmento, setFiltroSegmento] = useState('todos');
   const [showAddVendedor, setShowAddVendedor] = useState(false);
   const [novoVendedorNome, setNovoVendedorNome] = useState('');
   const [showDetail, setShowDetail] = useState<Cliente | null>(null);
@@ -30,14 +33,20 @@ const AdminDashboard = () => {
   const vendedores = useMemo(() => allVendedores.filter(v => v.ativo), [allVendedores]);
 
   const clientesFiltrados = useMemo(() => {
-    if (!busca.trim()) return todosClientes;
-    const q = busca.toLowerCase();
-    return todosClientes.filter(c =>
-      c.nomeCliente.toLowerCase().includes(q) ||
-      c.telefone.includes(q) ||
-      c.nomeCrianca?.toLowerCase().includes(q)
-    );
-  }, [todosClientes, busca]);
+    let lista = todosClientes;
+    if (busca.trim()) {
+      const q = busca.toLowerCase();
+      lista = lista.filter(c =>
+        c.nomeCliente.toLowerCase().includes(q) ||
+        c.telefone.includes(q) ||
+        c.nomeCrianca?.toLowerCase().includes(q)
+      );
+    }
+    if (filtroSegmento !== 'todos') {
+      lista = lista.filter(c => c.segmento === filtroSegmento);
+    }
+    return lista;
+  }, [todosClientes, busca, filtroSegmento]);
 
   const cadastrosOntem = useMemo(() => {
     const ontem = new Date();
@@ -171,6 +180,7 @@ const AdminDashboard = () => {
                           <div key={c.id} className="flex items-center justify-between py-1">
                             <div>
                               <span className="text-sm font-medium text-foreground">{c.nomeCliente}</span>
+                              <SegmentoBadge segmento={c.segmento} className="ml-2 align-middle" />
                               {c.nomeCrianca && <span className="text-xs text-muted-foreground ml-2">👦 {c.nomeCrianca}</span>}
                             </div>
                             <Button variant="ghost" size="sm" onClick={() => setShowDetail(c)} className="text-xs">
@@ -190,14 +200,27 @@ const AdminDashboard = () => {
         {/* Todos os Clientes */}
         <section className="animate-fade-in">
           <h2 className="font-display font-bold text-lg mb-3">Todos os Clientes</h2>
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar cliente..."
-              value={busca}
-              onChange={e => setBusca(e.target.value)}
-              className="pl-10 h-11 border-2"
-            />
+          <div className="flex flex-col sm:flex-row gap-2 mb-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar cliente..."
+                value={busca}
+                onChange={e => setBusca(e.target.value)}
+                className="pl-10 h-11 border-2"
+              />
+            </div>
+            <Select value={filtroSegmento} onValueChange={setFiltroSegmento}>
+              <SelectTrigger className="h-11 border-2 sm:w-48">
+                <SelectValue placeholder="Segmento" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover z-50">
+                <SelectItem value="todos">Todos os segmentos</SelectItem>
+                {SEGMENTOS.map(s => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
@@ -208,6 +231,7 @@ const AdminDashboard = () => {
                     <th className="text-left p-3 font-semibold text-foreground hidden sm:table-cell">Telefone</th>
                     <th className="text-left p-3 font-semibold text-foreground hidden md:table-cell">Vendedor</th>
                     <th className="text-left p-3 font-semibold text-foreground hidden sm:table-cell">Criança</th>
+                    <th className="text-left p-3 font-semibold text-foreground">Segmento</th>
                     <th className="text-center p-3 font-semibold text-foreground">Status</th>
                     <th className="text-center p-3 font-semibold text-foreground">Ações</th>
                   </tr>
@@ -224,6 +248,7 @@ const AdminDashboard = () => {
                         <td className="p-3 text-muted-foreground hidden sm:table-cell">{formatarTelefone(c.telefone)}</td>
                         <td className="p-3 text-muted-foreground hidden md:table-cell">{vendedor?.nome || '-'}</td>
                         <td className="p-3 hidden sm:table-cell">{c.nomeCrianca || '-'}</td>
+                        <td className="p-3"><SegmentoBadge segmento={c.segmento} /></td>
                         <td className="p-3 text-center">
                           <div className="flex items-center justify-center gap-1">
                             {c.primeiroContatoFeito ? (

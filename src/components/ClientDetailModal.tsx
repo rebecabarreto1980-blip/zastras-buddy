@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Cliente } from '@/lib/types';
-import { useUpdateCliente } from '@/hooks/useClientes';
+import { useUpdateCliente, useCompras } from '@/hooks/useClientes';
+import SegmentoBadge from '@/components/SegmentoBadge';
 import { formatarTelefone, getWhatsAppLink, getMensagem1, getMensagem2, calcularIdade, diasDesdeContato, gerarCupom, getMensagem5 } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -23,6 +24,9 @@ interface Props {
 const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdated }) => {
   const [c, setC] = useState(initial);
   const updateCliente = useUpdateCliente();
+  const { data: compras = [] } = useCompras(c.id);
+  const fmtMoeda = (v?: number) =>
+    v == null ? '—' : v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const handleSave = async () => {
     await updateCliente.mutateAsync({ id: c.id, data: c });
@@ -54,7 +58,10 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">{c.nomeCliente}</DialogTitle>
+          <DialogTitle className="font-display text-xl flex items-center gap-2">
+            {c.nomeCliente}
+            <SegmentoBadge segmento={c.segmento} />
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-5">
@@ -145,6 +152,44 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
           </section>
 
           {/* Observações */}
+          {/* Histórico de Compras */}
+          <section className="bg-muted rounded-xl p-4 space-y-3">
+            <h3 className="font-display font-bold text-foreground">🛍️ Histórico de Compras</h3>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-card rounded-lg p-2">
+                <p className="text-sm font-bold text-primary">{fmtMoeda(c.valorTotalGasto)}</p>
+                <p className="text-[10px] text-muted-foreground">Total gasto</p>
+              </div>
+              <div className="bg-card rounded-lg p-2">
+                <p className="text-sm font-bold text-foreground">
+                  {c.ultimaCompra ? format(new Date(c.ultimaCompra), 'dd/MM/yyyy') : '—'}
+                </p>
+                <p className="text-[10px] text-muted-foreground">Última compra</p>
+              </div>
+              <div className="bg-card rounded-lg p-2">
+                <p className="text-sm font-bold text-foreground">{c.qtdCompras ?? 0}</p>
+                <p className="text-[10px] text-muted-foreground">Compras</p>
+              </div>
+            </div>
+            {compras.length === 0 ? (
+              <p className="text-xs text-muted-foreground">Nenhuma compra registrada</p>
+            ) : (
+              <ul className="space-y-2">
+                {compras.map(compra => (
+                  <li key={compra.id} className="bg-card rounded-lg p-2 flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-foreground">
+                        {format(new Date(compra.dataCompra), 'dd/MM/yyyy')}
+                      </p>
+                      <p className="text-xs text-muted-foreground break-words">{compra.produtos || '—'}</p>
+                    </div>
+                    <span className="text-xs font-bold text-primary whitespace-nowrap">{fmtMoeda(compra.valor)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
           <section>
             <Label className="text-sm font-semibold">📝 Observações</Label>
             <Textarea
