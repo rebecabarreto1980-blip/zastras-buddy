@@ -57,7 +57,7 @@ const Dashboard = () => {
     return null;
   }
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = async () => { await logout(); navigate('/'); };
 
   const handleRegistrarContato = async (cliente: Cliente) => {
     const now = new Date().toISOString().split('T')[0];
