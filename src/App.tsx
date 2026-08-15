@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
-import PinGate from "@/components/PinGate";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -13,7 +12,8 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen gradient-zastras-soft" />;
   if (!user) return <Navigate to="/" replace />;
   if (adminOnly && user.role !== 'admin') return <Navigate to="/dashboard" replace />;
   return <>{children}</>;
@@ -29,7 +29,8 @@ const AppRoutes = () => (
 );
 
 function LoginGuard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen gradient-zastras-soft" />;
   if (user) return <Navigate to={user.role === 'admin' ? '/admin' : '/dashboard'} replace />;
   return <Login />;
 }
@@ -40,11 +41,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
-        <PinGate>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </PinGate>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
