@@ -231,21 +231,30 @@ export type Database = {
       vendedores: {
         Row: {
           ativo: boolean
+          auth_user_id: string | null
           data_cadastro: string
+          email_auth: string | null
           id: string
           nome: string
+          role: string
         }
         Insert: {
           ativo?: boolean
+          auth_user_id?: string | null
           data_cadastro?: string
+          email_auth?: string | null
           id?: string
           nome: string
+          role?: string
         }
         Update: {
           ativo?: boolean
+          auth_user_id?: string | null
           data_cadastro?: string
+          email_auth?: string | null
           id?: string
           nome?: string
+          role?: string
         }
         Relationships: []
       }
@@ -254,7 +263,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_vendedor_id: { Args: never; Returns: string }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

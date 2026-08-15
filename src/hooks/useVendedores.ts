@@ -8,7 +8,33 @@ function mapRow(row: any): Vendedor {
     nome: row.nome,
     dataCadastro: row.data_cadastro,
     ativo: row.ativo,
+    role: row.role || 'vendedor',
+    emailAuth: row.email_auth || undefined,
+    authUserId: row.auth_user_id || undefined,
   };
+}
+
+/** Lista pública (usada na tela de login) — apenas colunas liberadas para anônimos. */
+export function useVendedoresLogin() {
+  return useQuery({
+    queryKey: ['vendedores-login'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('vendedores')
+        .select('id, nome, role, email_auth, ativo')
+        .eq('ativo', true)
+        .order('nome');
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        nome: r.nome,
+        dataCadastro: '',
+        ativo: r.ativo,
+        role: (r.role || 'vendedor') as Vendedor['role'],
+        emailAuth: r.email_auth || undefined,
+      })) as Vendedor[];
+    },
+  });
 }
 
 export function useVendedores() {

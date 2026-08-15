@@ -30,7 +30,10 @@ const AdminDashboard = () => {
   const addVendedorMutation = useAddVendedor();
   const removeVendedorMutation = useRemoveVendedor();
 
-  const vendedores = useMemo(() => allVendedores.filter(v => v.ativo), [allVendedores]);
+  const vendedores = useMemo(
+    () => allVendedores.filter(v => v.ativo && v.role !== 'admin'),
+    [allVendedores]
+  );
 
   const clientesFiltrados = useMemo(() => {
     let lista = todosClientes;
@@ -60,12 +63,12 @@ const AdminDashboard = () => {
     return null;
   }
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = async () => { await logout(); navigate('/'); };
 
   const handleSignOutDevice = async () => {
-    if (!confirm('Sair do app neste dispositivo? Será necessário digitar o PIN novamente.')) return;
-    logout();
-    await supabase.auth.signOut();
+    if (!confirm('Sair do app neste dispositivo? Será necessário entrar com sua senha novamente.')) return;
+    await logout();
+    navigate('/');
   };
 
   const handleAddVendedor = async () => {
