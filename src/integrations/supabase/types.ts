@@ -95,6 +95,13 @@ export type Database = {
             referencedRelation: "vendedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "clientes_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "vendedores_login"
+            referencedColumns: ["id"]
+          },
         ]
       }
       compras: {
@@ -181,6 +188,13 @@ export type Database = {
             referencedRelation: "vendedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "historico_contatos_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "vendedores_login"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lembretes: {
@@ -226,35 +240,75 @@ export type Database = {
             referencedRelation: "vendedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lembretes_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "vendedores_login"
+            referencedColumns: ["id"]
+          },
         ]
       }
       vendedores: {
         Row: {
           ativo: boolean
+          auth_user_id: string | null
           data_cadastro: string
+          email_auth: string | null
           id: string
           nome: string
+          role: string
         }
         Insert: {
           ativo?: boolean
+          auth_user_id?: string | null
           data_cadastro?: string
+          email_auth?: string | null
           id?: string
           nome: string
+          role?: string
         }
         Update: {
           ativo?: boolean
+          auth_user_id?: string | null
           data_cadastro?: string
+          email_auth?: string | null
           id?: string
           nome?: string
+          role?: string
         }
         Relationships: []
       }
     }
     Views: {
-      [_ in never]: never
+      vendedores_login: {
+        Row: {
+          ativo: boolean | null
+          email_auth: string | null
+          id: string | null
+          nome: string | null
+          role: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          email_auth?: string | null
+          id?: string | null
+          nome?: string | null
+          role?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          email_auth?: string | null
+          id?: string | null
+          nome?: string | null
+          role?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      current_vendedor_id: { Args: never; Returns: string }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
