@@ -95,13 +95,6 @@ export type Database = {
             referencedRelation: "vendedores"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "clientes_vendedor_id_fkey"
-            columns: ["vendedor_id"]
-            isOneToOne: false
-            referencedRelation: "vendedores_login"
-            referencedColumns: ["id"]
-          },
         ]
       }
       compras: {
@@ -188,13 +181,6 @@ export type Database = {
             referencedRelation: "vendedores"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "historico_contatos_vendedor_id_fkey"
-            columns: ["vendedor_id"]
-            isOneToOne: false
-            referencedRelation: "vendedores_login"
-            referencedColumns: ["id"]
-          },
         ]
       }
       lembretes: {
@@ -240,13 +226,6 @@ export type Database = {
             referencedRelation: "vendedores"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "lembretes_vendedor_id_fkey"
-            columns: ["vendedor_id"]
-            isOneToOne: false
-            referencedRelation: "vendedores_login"
-            referencedColumns: ["id"]
-          },
         ]
       }
       vendedores: {
@@ -281,30 +260,7 @@ export type Database = {
       }
     }
     Views: {
-      vendedores_login: {
-        Row: {
-          ativo: boolean | null
-          email_auth: string | null
-          id: string | null
-          nome: string | null
-          role: string | null
-        }
-        Insert: {
-          ativo?: boolean | null
-          email_auth?: string | null
-          id?: string | null
-          nome?: string | null
-          role?: string | null
-        }
-        Update: {
-          ativo?: boolean | null
-          email_auth?: string | null
-          id?: string | null
-          nome?: string | null
-          role?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       current_vendedor_id: { Args: never; Returns: string }
