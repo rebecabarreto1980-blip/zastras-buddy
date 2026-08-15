@@ -3,6 +3,9 @@ export interface Vendedor {
   nome: string;
   dataCadastro: string;
   ativo: boolean;
+  role?: UserRole;
+  emailAuth?: string;
+  authUserId?: string;
 }
 
 export interface Cliente {
