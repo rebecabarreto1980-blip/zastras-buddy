@@ -181,7 +181,15 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
                       <p className="text-xs font-semibold text-foreground">
                         {format(new Date(compra.dataCompra), 'dd/MM/yyyy')}
                       </p>
-                      <p className="text-xs text-muted-foreground break-words">{compra.produtos || '—'}</p>
+                      {compra.produtos ? (
+                        <ul className="list-disc list-inside text-xs text-muted-foreground mt-1 space-y-0.5">
+                          {compra.produtos.split(';').map((item, idx) => (
+                            <li key={idx}>{item.trim()}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">—</p>
+                      )}
                     </div>
                     <span className="text-xs font-bold text-primary whitespace-nowrap">{fmtMoeda(compra.valor)}</span>
                   </li>
