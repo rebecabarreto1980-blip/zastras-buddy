@@ -142,15 +142,28 @@ const Dashboard = () => {
       <div className="max-w-lg mx-auto px-4 mt-4">
         {tab === 'clientes' && (
           <div className="space-y-4 animate-fade-in">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nome ou telefone..."
-                value={busca}
-                onChange={e => setBusca(e.target.value)}
-                className="pl-10 h-11 border-2"
-              />
+            {/* Search + Segment filter */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por nome ou telefone..."
+                  value={busca}
+                  onChange={e => setBusca(e.target.value)}
+                  className="pl-10 h-11 border-2"
+                />
+              </div>
+              <Select value={filtroSegmento} onValueChange={setFiltroSegmento}>
+                <SelectTrigger className="h-11 border-2 sm:w-44">
+                  <SelectValue placeholder="Segmento" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover z-50">
+                  <SelectItem value="todos">Todos os segmentos</SelectItem>
+                  {SEGMENTOS.map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Stats */}
