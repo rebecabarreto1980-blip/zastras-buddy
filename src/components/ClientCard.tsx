@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Eye, UserPlus, Clock } from 'lucide-react';
 import WhatsAppMessagePicker from './WhatsAppMessagePicker';
+import SegmentoBadge from './SegmentoBadge';
 
 interface ClientCardProps {
   cliente: Cliente;
