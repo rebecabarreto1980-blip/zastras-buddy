@@ -157,6 +157,12 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
             </Button>
           </section>
 
+          {/* Histórico de Contatos */}
+          <section className="bg-muted rounded-xl p-4 space-y-3">
+            <h3 className="font-display font-bold text-foreground">💬 Histórico de Contatos</h3>
+            <HistoricoList historicos={historicos} />
+          </section>
+
           {/* Observações */}
           {/* Histórico de Compras */}
           <section className="bg-muted rounded-xl p-4 space-y-3">
