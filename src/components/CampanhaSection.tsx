@@ -39,7 +39,7 @@ const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId }) => {
   );
 
   const handleEnviar = async (c: Cliente) => {
-    const texto = mensagem.replaceAll('{nome}', c.nomeCliente);
+    const texto = mensagem.split('{nome}').join(c.nomeCliente);
     window.open(getWhatsAppLink(c.telefone, texto), '_blank');
     await registrar.mutateAsync({
       clienteId: c.id,
