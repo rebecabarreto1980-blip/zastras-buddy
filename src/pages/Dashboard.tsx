@@ -31,14 +31,20 @@ const Dashboard = () => {
   const addHistorico = useAddHistorico();
 
   const clientes = useMemo(() => {
-    if (!busca.trim()) return allClientes;
-    const q = busca.toLowerCase();
-    return allClientes.filter(c =>
-      c.nomeCliente.toLowerCase().includes(q) ||
-      c.telefone.includes(q) ||
-      c.nomeCrianca?.toLowerCase().includes(q)
-    );
-  }, [allClientes, busca]);
+    let lista = allClientes;
+    if (busca.trim()) {
+      const q = busca.toLowerCase();
+      lista = lista.filter(c =>
+        c.nomeCliente.toLowerCase().includes(q) ||
+        c.telefone.includes(q) ||
+        c.nomeCrianca?.toLowerCase().includes(q)
+      );
+    }
+    if (filtroSegmento !== 'todos') {
+      lista = lista.filter(c => c.segmento === filtroSegmento);
+    }
+    return lista;
+  }, [allClientes, busca, filtroSegmento]);
 
   const aniversariosHoje = useMemo(() => {
     return clientes.filter(c => c.dataNascimentoCrianca && isAniversarioHoje(c.dataNascimentoCrianca));
