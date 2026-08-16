@@ -8,9 +8,11 @@ import ClientCard from '@/components/ClientCard';
 import AddClientModal from '@/components/AddClientModal';
 import RegisterChildModal from '@/components/RegisterChildModal';
 import ClientDetailModal from '@/components/ClientDetailModal';
+import SegmentoBadge, { SEGMENTOS } from '@/components/SegmentoBadge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Plus, LogOut, Store, Gift, Clock, MessageCircle, CalendarHeart, Bell } from 'lucide-react';
 
 const Dashboard = () => {
