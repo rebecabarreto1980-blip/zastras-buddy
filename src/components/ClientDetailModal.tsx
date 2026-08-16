@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Cliente } from '@/lib/types';
 import { useUpdateCliente, useCompras } from '@/hooks/useClientes';
 import SegmentoBadge from '@/components/SegmentoBadge';
+import PausarContatoBadge from '@/components/PausarContatoBadge';
+import HistoricoList from '@/components/HistoricoList';
+import { useHistoricos, devePausarContato } from '@/hooks/useHistorico';
 import { formatarTelefone, getWhatsAppLink, getMensagem1, getMensagem2, calcularIdade, diasDesdeContato, gerarCupom, getMensagem5 } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -25,6 +28,8 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
   const [c, setC] = useState(initial);
   const updateCliente = useUpdateCliente();
   const { data: compras = [] } = useCompras(c.id);
+  const { data: historicos = [] } = useHistoricos(c.id);
+  const pausar = devePausarContato(historicos);
   const fmtMoeda = (v?: number) =>
     v == null ? '—' : v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -65,6 +70,7 @@ const ClientDetailModal: React.FC<Props> = ({ cliente: initial, onClose, onUpdat
         </DialogHeader>
 
         <div className="space-y-5">
+          {pausar && <PausarContatoBadge />}
           {/* Contact Info */}
           <div className="flex items-center gap-3">
             <Button
