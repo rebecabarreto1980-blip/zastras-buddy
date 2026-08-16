@@ -51,6 +51,7 @@ export interface HistoricoContato {
   mensagemEnviada?: string;
   respostaRecebida?: string;
   cupomGerado?: string;
+  respondeu?: boolean | null;
 }
 
 export interface Lembrete {
