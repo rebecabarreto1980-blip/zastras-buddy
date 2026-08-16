@@ -142,6 +142,7 @@ export type Database = {
           data_contato: string
           id: string
           mensagem_enviada: string | null
+          respondeu: boolean | null
           resposta_recebida: string | null
           tipo_contato: string
           vendedor_id: string | null
@@ -152,6 +153,7 @@ export type Database = {
           data_contato?: string
           id?: string
           mensagem_enviada?: string | null
+          respondeu?: boolean | null
           resposta_recebida?: string | null
           tipo_contato?: string
           vendedor_id?: string | null
@@ -162,6 +164,7 @@ export type Database = {
           data_contato?: string
           id?: string
           mensagem_enviada?: string | null
+          respondeu?: boolean | null
           resposta_recebida?: string | null
           tipo_contato?: string
           vendedor_id?: string | null
