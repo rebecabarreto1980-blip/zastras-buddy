@@ -62,6 +62,18 @@
     --warning-foreground: 0 0% 100%;
     --info: 210 80% 55%;
     --info-foreground: 0 0% 100%;
+
+    /* Segmentação de clientes */
+    --segment-diamante: 260 80% 35%;
+    --segment-diamante-foreground: 0 0% 100%;
+    --segment-platina: 220 20% 85%;
+    --segment-platina-foreground: 220 20% 20%;
+    --segment-ouro: 45 90% 55%;
+    --segment-ouro-foreground: 35 80% 20%;
+    --segment-prata: 220 10% 82%;
+    --segment-prata-foreground: 220 15% 25%;
+    --segment-bronze: 30 55% 62%;
+    --segment-bronze-foreground: 30 60% 18%;
   }
 }
 
