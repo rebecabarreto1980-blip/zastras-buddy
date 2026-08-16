@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Eye, UserPlus, Clock } from 'lucide-react';
 import WhatsAppMessagePicker from './WhatsAppMessagePicker';
+import SegmentoBadge from './SegmentoBadge';
 
 interface ClientCardProps {
   cliente: Cliente;
@@ -32,7 +33,8 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onDetail, onRegisterCh
             💬 {formatarTelefone(cliente.telefone)}
           </button>
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-wrap justify-end">
+          <SegmentoBadge segmento={cliente.segmento} />
           {cliente.primeiroContatoFeito ? (
             <Badge variant="outline" className="text-xs border-success text-success px-1.5">✅</Badge>
           ) : (

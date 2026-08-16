@@ -8,9 +8,11 @@ import ClientCard from '@/components/ClientCard';
 import AddClientModal from '@/components/AddClientModal';
 import RegisterChildModal from '@/components/RegisterChildModal';
 import ClientDetailModal from '@/components/ClientDetailModal';
+import SegmentoBadge, { SEGMENTOS } from '@/components/SegmentoBadge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Plus, LogOut, Store, Gift, Clock, MessageCircle, CalendarHeart, Bell } from 'lucide-react';
 
 const Dashboard = () => {
@@ -18,6 +20,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<'clientes' | 'lembretes'>('clientes');
   const [busca, setBusca] = useState('');
+  const [filtroSegmento, setFiltroSegmento] = useState('todos');
   const [showAddClient, setShowAddClient] = useState(false);
   const [showRegisterChild, setShowRegisterChild] = useState<Cliente | null>(null);
   const [showDetail, setShowDetail] = useState<Cliente | null>(null);
@@ -28,14 +31,20 @@ const Dashboard = () => {
   const addHistorico = useAddHistorico();
 
   const clientes = useMemo(() => {
-    if (!busca.trim()) return allClientes;
-    const q = busca.toLowerCase();
-    return allClientes.filter(c =>
-      c.nomeCliente.toLowerCase().includes(q) ||
-      c.telefone.includes(q) ||
-      c.nomeCrianca?.toLowerCase().includes(q)
-    );
-  }, [allClientes, busca]);
+    let lista = allClientes;
+    if (busca.trim()) {
+      const q = busca.toLowerCase();
+      lista = lista.filter(c =>
+        c.nomeCliente.toLowerCase().includes(q) ||
+        c.telefone.includes(q) ||
+        c.nomeCrianca?.toLowerCase().includes(q)
+      );
+    }
+    if (filtroSegmento !== 'todos') {
+      lista = lista.filter(c => c.segmento === filtroSegmento);
+    }
+    return lista;
+  }, [allClientes, busca, filtroSegmento]);
 
   const aniversariosHoje = useMemo(() => {
     return clientes.filter(c => c.dataNascimentoCrianca && isAniversarioHoje(c.dataNascimentoCrianca));
@@ -133,15 +142,28 @@ const Dashboard = () => {
       <div className="max-w-lg mx-auto px-4 mt-4">
         {tab === 'clientes' && (
           <div className="space-y-4 animate-fade-in">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nome ou telefone..."
-                value={busca}
-                onChange={e => setBusca(e.target.value)}
-                className="pl-10 h-11 border-2"
-              />
+            {/* Search + Segment filter */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por nome ou telefone..."
+                  value={busca}
+                  onChange={e => setBusca(e.target.value)}
+                  className="pl-10 h-11 border-2"
+                />
+              </div>
+              <Select value={filtroSegmento} onValueChange={setFiltroSegmento}>
+                <SelectTrigger className="h-11 border-2 sm:w-44">
+                  <SelectValue placeholder="Segmento" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover z-50">
+                  <SelectItem value="todos">Todos os segmentos</SelectItem>
+                  {SEGMENTOS.map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Stats */}

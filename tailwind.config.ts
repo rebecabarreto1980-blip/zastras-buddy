@@ -80,6 +80,13 @@ export default {
           DEFAULT: "hsl(var(--info))",
           foreground: "hsl(var(--info-foreground))",
         },
+        segment: {
+          diamante: { DEFAULT: "hsl(var(--segment-diamante))", foreground: "hsl(var(--segment-diamante-foreground))" },
+          platina: { DEFAULT: "hsl(var(--segment-platina))", foreground: "hsl(var(--segment-platina-foreground))" },
+          ouro: { DEFAULT: "hsl(var(--segment-ouro))", foreground: "hsl(var(--segment-ouro-foreground))" },
+          prata: { DEFAULT: "hsl(var(--segment-prata))", foreground: "hsl(var(--segment-prata-foreground))" },
+          bronze: { DEFAULT: "hsl(var(--segment-bronze))", foreground: "hsl(var(--segment-bronze-foreground))" },
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
