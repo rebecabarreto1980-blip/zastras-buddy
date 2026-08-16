@@ -6,6 +6,7 @@ import { useClientes } from '@/hooks/useClientes';
 import { formatarTelefone, getWhatsAppLink, getMensagem1 } from '@/lib/store';
 import ClientDetailModal from '@/components/ClientDetailModal';
 import SegmentoBadge, { SEGMENTOS } from '@/components/SegmentoBadge';
+import CampanhaSection from '@/components/CampanhaSection';
 import { Cliente } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,6 +33,11 @@ const AdminDashboard = () => {
 
   const vendedores = useMemo(
     () => allVendedores.filter(v => v.ativo && v.role !== 'admin'),
+    [allVendedores]
+  );
+
+  const adminVendedorId = useMemo(
+    () => allVendedores.find(v => v.role === 'admin')?.id,
     [allVendedores]
   );
 
@@ -199,6 +205,9 @@ const AdminDashboard = () => {
             })}
           </div>
         </section>
+
+        {/* Campanha */}
+        <CampanhaSection clientes={todosClientes} adminVendedorId={adminVendedorId} />
 
         {/* Todos os Clientes */}
         <section className="animate-fade-in">
