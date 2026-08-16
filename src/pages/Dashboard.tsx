@@ -20,6 +20,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<'clientes' | 'lembretes'>('clientes');
   const [busca, setBusca] = useState('');
+  const [filtroSegmento, setFiltroSegmento] = useState('todos');
   const [showAddClient, setShowAddClient] = useState(false);
   const [showRegisterChild, setShowRegisterChild] = useState<Cliente | null>(null);
   const [showDetail, setShowDetail] = useState<Cliente | null>(null);
