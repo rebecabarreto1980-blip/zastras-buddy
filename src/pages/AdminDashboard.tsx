@@ -207,7 +207,7 @@ const AdminDashboard = () => {
         </section>
 
         {/* Campanha */}
-        <CampanhaSection clientes={todosClientes} adminVendedorId={adminVendedorId} />
+        <CampanhaSection clientes={todosClientes} adminVendedorId={adminVendedorId} onClienteAtualizado={refresh} />
 
         {/* Todos os Clientes */}
         <section className="animate-fade-in">
