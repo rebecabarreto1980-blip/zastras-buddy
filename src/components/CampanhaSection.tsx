@@ -6,21 +6,22 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import SegmentoBadge, { SEGMENTOS } from '@/components/SegmentoBadge';
 import PausarContatoBadge from '@/components/PausarContatoBadge';
-import HistoricoList from '@/components/HistoricoList';
+import ClientDetailModal from '@/components/ClientDetailModal';
 import { useHistoricos, useRegistrarContato, devePausarContato } from '@/hooks/useHistorico';
 import { getWhatsAppLink, formatarTelefone } from '@/lib/store';
-import { Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { Send, Eye } from 'lucide-react';
 
 interface Props {
   clientes: Cliente[];
   adminVendedorId?: string;
+  onClienteAtualizado?: () => void;
 }
 
-const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId }) => {
+const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId, onClienteAtualizado }) => {
   const [filtroSegmento, setFiltroSegmento] = useState('todos');
   const [mensagem, setMensagem] = useState('Olá {nome}! 💜 Aqui é da ZASTRAS, temos novidades especiais para você!');
   const [enviados, setEnviados] = useState<string[]>([]);
-  const [expandido, setExpandido] = useState<string | null>(null);
+  const [clienteDetalhe, setClienteDetalhe] = useState<Cliente | null>(null);
 
   const { data: historicos = [] } = useHistoricos();
   const registrar = useRegistrarContato();
@@ -80,7 +81,6 @@ const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId }) => {
           {lista.map(c => {
             const hs = porCliente[c.id] || [];
             const pausar = devePausarContato(hs);
-            const aberto = expandido === c.id;
             return (
               <div key={c.id} className="border rounded-lg p-3 bg-muted/30">
                 <div className="flex items-start justify-between gap-2 flex-wrap">
@@ -99,21 +99,24 @@ const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId }) => {
                     <Button size="sm" className="h-8 text-xs gradient-zastras text-primary-foreground" onClick={() => handleEnviar(c)}>
                       <Send className="w-3 h-3 mr-1" /> Abrir WhatsApp
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setExpandido(aberto ? null : c.id)}>
-                      {aberto ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setClienteDetalhe(c)}>
+                      <Eye className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
-                {aberto && (
-                  <div className="mt-3">
-                    <HistoricoList historicos={hs} />
-                  </div>
-                )}
               </div>
             );
           })}
         </div>
       </div>
+
+      {clienteDetalhe && (
+        <ClientDetailModal
+          cliente={clienteDetalhe}
+          onClose={() => setClienteDetalhe(null)}
+          onUpdated={() => onClienteAtualizado?.()}
+        />
+      )}
     </section>
   );
 };
