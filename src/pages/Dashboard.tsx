@@ -1,8 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { useClientes, useUpdateCliente, useAddHistorico } from '@/hooks/useClientes';
-import { formatarTelefone, getWhatsAppLink, getMensagem1, diasDesdeContato, isAniversarioHoje, isAniversarioProximo, calcularIdade, getMensagem3 } from '@/lib/store';
+import { useClientes, useUpdateCliente, useAddHistorico, useCompras } from '@/hooks/useClientes';
+import { useHistoricos } from '@/hooks/useHistorico';
+import { useVendedores } from '@/hooks/useVendedores';
+import { precisaSegundoToqueVip } from '@/hooks/useSegundoToqueVip';
+import { getMensagemSegundoToqueVip, getPrimeiroProduto, formatarTelefone, getWhatsAppLink, getMensagem1, diasDesdeContato, isAniversarioHoje, isAniversarioProximo, calcularIdade, getMensagem3 } from '@/lib/store';
 import { Cliente } from '@/lib/types';
 import ClientCard from '@/components/ClientCard';
 import AddClientModal from '@/components/AddClientModal';
@@ -29,6 +32,10 @@ const Dashboard = () => {
   const { data: allClientes = [], refetch } = useClientes(vendedorId);
   const updateCliente = useUpdateCliente();
   const addHistorico = useAddHistorico();
+  const { data: historicos = [], refetch: refetchHistoricos } = useHistoricos();
+  const { data: compras = [] } = useCompras();
+  const { data: vendedores = [] } = useVendedores();
+  const adminVendedorId = vendedores.find(v => v.role === 'admin')?.id;
 
   const clientes = useMemo(() => {
     let lista = allClientes;
@@ -65,6 +72,24 @@ const Dashboard = () => {
     navigate('/');
     return null;
   }
+
+  const handleSegundoToqueVip = async (cliente: Cliente) => {
+    const ultimaCompra = compras
+      .filter(c => c.clienteId === cliente.id)
+      .sort((a, b) => (a.dataCompra < b.dataCompra ? 1 : -1))[0];
+    const produto = getPrimeiroProduto(ultimaCompra?.produtos || cliente.produtos);
+    const msg = getMensagemSegundoToqueVip(cliente.nomeCliente, user.nome, produto);
+    window.open(getWhatsAppLink(cliente.telefone, msg), '_blank');
+    await addHistorico.mutateAsync({
+      clienteId: cliente.id,
+      vendedorId: user.id,
+      tipoContato: 'whatsapp',
+      mensagemEnviada: msg,
+    });
+    await updateCliente.mutateAsync({ id: cliente.id, data: { ultimoContato: new Date().toISOString().split('T')[0] } });
+    refetchHistoricos();
+    refetch();
+  };
 
   const handleLogout = async () => { await logout(); navigate('/'); };
 
@@ -191,6 +216,8 @@ const Dashboard = () => {
                   onDetail={() => setShowDetail(c)}
                   onRegisterChild={() => setShowRegisterChild(c)}
                   onRegistrarContato={() => handleRegistrarContato(c)}
+                  segundoToqueVip={precisaSegundoToqueVip(c, historicos, adminVendedorId, user.id)}
+                  onSegundoToqueVip={() => handleSegundoToqueVip(c)}
                 />
               ))}
             </div>

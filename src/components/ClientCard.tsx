@@ -12,9 +12,11 @@ interface ClientCardProps {
   onDetail: () => void;
   onRegisterChild: () => void;
   onRegistrarContato: () => void;
+  segundoToqueVip?: boolean;
+  onSegundoToqueVip?: () => void;
 }
 
-const ClientCard: React.FC<ClientCardProps> = ({ cliente, onDetail, onRegisterChild, onRegistrarContato }) => {
+const ClientCard: React.FC<ClientCardProps> = ({ cliente, onDetail, onRegisterChild, onRegistrarContato, segundoToqueVip, onSegundoToqueVip }) => {
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const dias = diasDesdeContato(cliente.ultimoContato);
   const aniversarioProximo = isAniversarioProximo(cliente.dataNascimentoCrianca);
@@ -44,6 +46,17 @@ const ClientCard: React.FC<ClientCardProps> = ({ cliente, onDetail, onRegisterCh
           {aniversarioProximo && !aniversarioHoje && <Badge variant="outline" className="text-xs border-zastras-pink text-zastras-pink px-1.5">🎂</Badge>}
         </div>
       </div>
+
+      {segundoToqueVip && (
+        <button
+          onClick={onSegundoToqueVip}
+          className="w-full text-left"
+        >
+          <Badge className="text-xs bg-secondary text-secondary-foreground w-full justify-center py-1 hover:opacity-90">
+            ⏱️ Hora do 2º toque
+          </Badge>
+        </button>
+      )}
 
       {cliente.nomeCrianca && (
         <p className="text-sm text-muted-foreground">
