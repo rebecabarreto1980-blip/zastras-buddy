@@ -120,6 +120,37 @@ export function getMensagemDesconto(nomeVendedor: string): string {
   return `Olá, tudo bem?\n\nAqui é ${nomeVendedor} da Zastras do Shopping Cidade Jardim.\n\nQueria saber se o presente que você escolheu fez sucesso por aí 😊\n\nQuando estiver pelo shopping, passe no quiosque para ver as novidades, sempre temos coisas bem legais chegando por aqui.\n\nAté o fim de março, nossos clientes que retornarem ganham 10% de desconto.\n\nE, se for mais fácil, também temos delivery.\n\nSerá um prazer receber você por aqui! ✨`;
 }
 
+// ---- Trilha VIP (segmento Diamante) ----
+export const MENSAGEM_VIP_ADMIN =
+  'Olá {nome}, aqui é a Rebeca, sócia da Zastras no Cidade Jardim. Vi que você foi atendido(a) recentemente pelo(a) {vendedor} e espero que tenha sido uma ótima experiência. Quis passar aqui pessoalmente só para agradecer a preferência e me colocar à disposição, caso precise de algo. {vendedor} e o time estão sempre por lá, prontos para te atender da melhor forma. Um abraço, Rebeca.';
+
+/** Substitui as variáveis {nome} e {vendedor} em um texto de campanha. */
+export function getMensagemPersonalizada(
+  texto: string,
+  vars: { nome: string; vendedor?: string }
+): string {
+  return texto
+    .split('{nome}').join(vars.nome)
+    .split('{vendedor}').join(vars.vendedor || 'nossa equipe');
+}
+
+/** Primeiro item da lista de produtos ("A; B; C" -> "A"). */
+export function getPrimeiroProduto(produtos?: string | null): string | undefined {
+  if (!produtos) return undefined;
+  const primeiro = produtos.split(';')[0]?.trim();
+  return primeiro || undefined;
+}
+
+export function getMensagemSegundoToqueVip(
+  nomeCliente: string,
+  nomeVendedor: string,
+  primeiroProduto?: string
+): string {
+  const produto = primeiroProduto?.trim() || 'sua última compra';
+  return `Oi ${nomeCliente}! Aqui é o(a) ${nomeVendedor} da Zastras 😊 Passando pra saber se ${produto} fez sucesso por aí! Qualquer coisa que precisar, estamos à disposição — inclusive fazemos entrega em SP no mesmo dia. Ah, e já segue a gente no Instagram? Sempre tem novidade por lá @zastras.cidadejardim ❤️`;
+}
+
+
 // Helpers
 export function calcularIdade(dataNascimento: string): number {
   const hoje = new Date();
