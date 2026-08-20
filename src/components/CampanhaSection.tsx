@@ -8,7 +8,8 @@ import SegmentoBadge, { SEGMENTOS } from '@/components/SegmentoBadge';
 import PausarContatoBadge from '@/components/PausarContatoBadge';
 import ClientDetailModal from '@/components/ClientDetailModal';
 import { useHistoricos, useRegistrarContato, devePausarContato } from '@/hooks/useHistorico';
-import { getWhatsAppLink, formatarTelefone } from '@/lib/store';
+import { getWhatsAppLink, formatarTelefone, getMensagemPersonalizada, MENSAGEM_VIP_ADMIN } from '@/lib/store';
+import { useVendedores } from '@/hooks/useVendedores';
 import { Send, Eye } from 'lucide-react';
 
 interface Props {
@@ -19,11 +20,28 @@ interface Props {
 
 const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId, onClienteAtualizado }) => {
   const [filtroSegmento, setFiltroSegmento] = useState('todos');
-  const [mensagem, setMensagem] = useState('Olá {nome}! 💜 Aqui é da ZASTRAS, temos novidades especiais para você!');
+  const [mensagem, setMensagem] = useState('Olá {nome}! ❤️ Aqui é da ZASTRAS, temos novidades especiais para você!');
+  const [mensagemTocada, setMensagemTocada] = useState(false);
   const [enviados, setEnviados] = useState<string[]>([]);
   const [clienteDetalhe, setClienteDetalhe] = useState<Cliente | null>(null);
 
   const { data: historicos = [] } = useHistoricos();
+  const { data: vendedores = [] } = useVendedores();
+
+  const nomeVendedorDe = (c: Cliente) =>
+    vendedores.find(v => v.id === c.vendedorId)?.nome || 'nossa equipe';
+
+  const handleFiltroSegmento = (valor: string) => {
+    setFiltroSegmento(valor);
+    if (!mensagemTocada) {
+      setMensagem(
+        valor === 'Diamante'
+          ? MENSAGEM_VIP_ADMIN
+          : 'Olá {nome}! ❤️ Aqui é da ZASTRAS, temos novidades especiais para você!'
+      );
+    }
+  };
+
   const registrar = useRegistrarContato();
 
   const porCliente = useMemo(() => {
@@ -40,7 +58,7 @@ const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId, onCliente
   );
 
   const handleEnviar = async (c: Cliente) => {
-    const texto = mensagem.split('{nome}').join(c.nomeCliente);
+    const texto = getMensagemPersonalizada(mensagem, { nome: c.nomeCliente, vendedor: nomeVendedorDe(c) });
     window.open(getWhatsAppLink(c.telefone, texto), '_blank');
     await registrar.mutateAsync({
       clienteId: c.id,
@@ -59,7 +77,7 @@ const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId, onCliente
       </div>
 
       <div className="bg-card rounded-xl border shadow-sm p-4 space-y-3">
-        <Select value={filtroSegmento} onValueChange={setFiltroSegmento}>
+        <Select value={filtroSegmento} onValueChange={handleFiltroSegmento}>
           <SelectTrigger className="h-11 border-2 sm:w-56">
             <SelectValue placeholder="Segmento" />
           </SelectTrigger>
@@ -71,11 +89,11 @@ const CampanhaSection: React.FC<Props> = ({ clientes, adminVendedorId, onCliente
 
         <Textarea
           value={mensagem}
-          onChange={e => setMensagem(e.target.value)}
+          onChange={e => { setMensagem(e.target.value); setMensagemTocada(true); }}
           rows={4}
           placeholder="Use {nome} para personalizar"
         />
-        <p className="text-xs text-muted-foreground">Use <code>{'{nome}'}</code> para inserir o nome do cliente.</p>
+        <p className="text-xs text-muted-foreground">Use <code>{'{nome}'}</code> e <code>{'{vendedor}'}</code> para personalizar.</p>
 
         <div className="space-y-2">
           {lista.map(c => {

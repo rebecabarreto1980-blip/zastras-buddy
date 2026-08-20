@@ -101,24 +101,55 @@ export function getWhatsAppLink(telefone: string, mensagem: string): string {
 
 // Message templates
 export function getMensagem1(nome: string): string {
-  return `Olá ${nome}! Aqui é da ZASTRAS 💜 Passando para agradecer pela compra! Esperamos que o presente traga muita alegria 🎁 Ah, e não esquece de seguir nosso Instagram @zastras para ficar por dentro das novidades! Volte sempre! 💫`;
+  return `Olá ${nome}! Aqui é da ZASTRAS ❤️ Passando para agradecer pela compra! Esperamos que o presente traga muita alegria 🎁 Ah, e não esquece de seguir nosso Instagram @zastras.cidadejardim para ficar por dentro das novidades! Volte sempre! 💫`;
 }
 export function getMensagem2(nome: string): string {
-  return `Oi ${nome}, aqui é da ZASTRAS! ❤️ A gente adorou ter você por aqui e queremos fazer uma surpresa especial para a criança que ganhou o presente! 🎁 Se você compartilhar com a gente:\n• Nome da criança 👧🧒\n• Data de aniversário 📅\nA gente te dá 10% de desconto na próxima compra! 🎉\nPode responder aqui por áudio mesmo – a gente escuta e já cadastra.\nAssim a gente manda uma mensagem personalizada no aniversário, com uma lembrança especial da ZASTRAS ✨\nE claro, conta pra gente: a criança gostou do presente? 😊\nÉ só responder que já te mandamos o cupom de 10%!\nBeijos, equipe ZASTRAS 💜`;
+  return `Oi ${nome}, aqui é da ZASTRAS! ❤️ A gente adorou ter você por aqui e queremos fazer uma surpresa especial para a criança que ganhou o presente! 🎁 Se você compartilhar com a gente:\n• Nome da criança 👧🧒\n• Data de aniversário 📅\nA gente te dá 10% de desconto na próxima compra! 🎉\nPode responder aqui por áudio mesmo – a gente escuta e já cadastra.\nAssim a gente manda uma mensagem personalizada no aniversário, com uma lembrança especial da ZASTRAS ✨\nE claro, conta pra gente: a criança gostou do presente? 😊\nÉ só responder que já te mandamos o cupom de 10%!\nBeijos, equipe ZASTRAS ❤️`;
 }
 export function getMensagem3(nomeCliente: string, nomeCrianca: string): string {
-  return `Feliz aniversário, ${nomeCrianca}! 🎉🎂\n${nomeCliente}, passando aqui para desejar um dia maravilhoso! Que seja um ano cheio de descobertas e brincadeiras incríveis ✨\nTemos novidades na loja que vai amar! Quer dar uma olhadinha? 🎁\nCom carinho, equipe ZASTRAS 💜`;
+  return `Feliz aniversário, ${nomeCrianca}! 🎉🎂\n${nomeCliente}, passando aqui para desejar um dia maravilhoso! Que seja um ano cheio de descobertas e brincadeiras incríveis ✨\nTemos novidades na loja que vai amar! Quer dar uma olhadinha? 🎁\nCom carinho, equipe ZASTRAS ❤️`;
 }
 export function getMensagem4(nomeCliente: string, nomeCrianca?: string): string {
   const crianca = nomeCrianca ? `Para o ${nomeCrianca}, preparamos` : 'Preparamos';
-  return `Oi ${nomeCliente}! 💜 O Dia das Crianças está chegando! 🎉\nE claro que a ZASTRAS não podia deixar passar.\n${crianca} seleções especiais de brinquedos e livros educativos!\nQuer passar na loja ou quer que eu envie fotos das novidades?\nBeijos, equipe ZASTRAS 💜`;
+  return `Oi ${nomeCliente}! ❤️ O Dia das Crianças está chegando! 🎉\nE claro que a ZASTRAS não podia deixar passar.\n${crianca} seleções especiais de brinquedos e livros educativos!\nQuer passar na loja ou quer que eu envie fotos das novidades?\nBeijos, equipe ZASTRAS ❤️`;
 }
 export function getMensagem5(nomeCliente: string, nomeCrianca: string, cupom: string): string {
-  return `Recebemos, ${nomeCliente}! ✅\nDados do ${nomeCrianca} cadastrados com sucesso!\nAqui está seu cupom de 10%: ${cupom}\nÉ só mostrar no caixa da loja! 🎁\nBeijos, equipe ZASTRAS 💜`;
+  return `Recebemos, ${nomeCliente}! ✅\nDados do ${nomeCrianca} cadastrados com sucesso!\nAqui está seu cupom de 10%: ${cupom}\nÉ só mostrar no caixa da loja! 🎁\nBeijos, equipe ZASTRAS ❤️`;
 }
 export function getMensagemDesconto(nomeVendedor: string): string {
   return `Olá, tudo bem?\n\nAqui é ${nomeVendedor} da Zastras do Shopping Cidade Jardim.\n\nQueria saber se o presente que você escolheu fez sucesso por aí 😊\n\nQuando estiver pelo shopping, passe no quiosque para ver as novidades, sempre temos coisas bem legais chegando por aqui.\n\nAté o fim de março, nossos clientes que retornarem ganham 10% de desconto.\n\nE, se for mais fácil, também temos delivery.\n\nSerá um prazer receber você por aqui! ✨`;
 }
+
+// ---- Trilha VIP (segmento Diamante) ----
+export const MENSAGEM_VIP_ADMIN =
+  'Olá {nome}, aqui é a Rebeca, sócia da Zastras no Cidade Jardim. Vi que você foi atendido(a) recentemente pelo(a) {vendedor} e espero que tenha sido uma ótima experiência. Quis passar aqui pessoalmente só para agradecer a preferência e me colocar à disposição, caso precise de algo. {vendedor} e o time estão sempre por lá, prontos para te atender da melhor forma. Um abraço, Rebeca.';
+
+/** Substitui as variáveis {nome} e {vendedor} em um texto de campanha. */
+export function getMensagemPersonalizada(
+  texto: string,
+  vars: { nome: string; vendedor?: string }
+): string {
+  return texto
+    .split('{nome}').join(vars.nome)
+    .split('{vendedor}').join(vars.vendedor || 'nossa equipe');
+}
+
+/** Primeiro item da lista de produtos ("A; B; C" -> "A"). */
+export function getPrimeiroProduto(produtos?: string | null): string | undefined {
+  if (!produtos) return undefined;
+  const primeiro = produtos.split(';')[0]?.trim();
+  return primeiro || undefined;
+}
+
+export function getMensagemSegundoToqueVip(
+  nomeCliente: string,
+  nomeVendedor: string,
+  primeiroProduto?: string
+): string {
+  const produto = primeiroProduto?.trim() || 'sua última compra';
+  return `Oi ${nomeCliente}! Aqui é o(a) ${nomeVendedor} da Zastras 😊 Passando pra saber se ${produto} fez sucesso por aí! Qualquer coisa que precisar, estamos à disposição — inclusive fazemos entrega em SP no mesmo dia. Ah, e já segue a gente no Instagram? Sempre tem novidade por lá @zastras.cidadejardim ❤️`;
+}
+
 
 // Helpers
 export function calcularIdade(dataNascimento: string): number {
