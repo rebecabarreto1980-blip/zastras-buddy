@@ -101,20 +101,20 @@ export function getWhatsAppLink(telefone: string, mensagem: string): string {
 
 // Message templates
 export function getMensagem1(nome: string): string {
-  return `Olá ${nome}! Aqui é da ZASTRAS 💜 Passando para agradecer pela compra! Esperamos que o presente traga muita alegria 🎁 Ah, e não esquece de seguir nosso Instagram @zastras para ficar por dentro das novidades! Volte sempre! 💫`;
+  return `Olá ${nome}! Aqui é da ZASTRAS ❤️ Passando para agradecer pela compra! Esperamos que o presente traga muita alegria 🎁 Ah, e não esquece de seguir nosso Instagram @zastras.cidadejardim para ficar por dentro das novidades! Volte sempre! 💫`;
 }
 export function getMensagem2(nome: string): string {
-  return `Oi ${nome}, aqui é da ZASTRAS! ❤️ A gente adorou ter você por aqui e queremos fazer uma surpresa especial para a criança que ganhou o presente! 🎁 Se você compartilhar com a gente:\n• Nome da criança 👧🧒\n• Data de aniversário 📅\nA gente te dá 10% de desconto na próxima compra! 🎉\nPode responder aqui por áudio mesmo – a gente escuta e já cadastra.\nAssim a gente manda uma mensagem personalizada no aniversário, com uma lembrança especial da ZASTRAS ✨\nE claro, conta pra gente: a criança gostou do presente? 😊\nÉ só responder que já te mandamos o cupom de 10%!\nBeijos, equipe ZASTRAS 💜`;
+  return `Oi ${nome}, aqui é da ZASTRAS! ❤️ A gente adorou ter você por aqui e queremos fazer uma surpresa especial para a criança que ganhou o presente! 🎁 Se você compartilhar com a gente:\n• Nome da criança 👧🧒\n• Data de aniversário 📅\nA gente te dá 10% de desconto na próxima compra! 🎉\nPode responder aqui por áudio mesmo – a gente escuta e já cadastra.\nAssim a gente manda uma mensagem personalizada no aniversário, com uma lembrança especial da ZASTRAS ✨\nE claro, conta pra gente: a criança gostou do presente? 😊\nÉ só responder que já te mandamos o cupom de 10%!\nBeijos, equipe ZASTRAS ❤️`;
 }
 export function getMensagem3(nomeCliente: string, nomeCrianca: string): string {
-  return `Feliz aniversário, ${nomeCrianca}! 🎉🎂\n${nomeCliente}, passando aqui para desejar um dia maravilhoso! Que seja um ano cheio de descobertas e brincadeiras incríveis ✨\nTemos novidades na loja que vai amar! Quer dar uma olhadinha? 🎁\nCom carinho, equipe ZASTRAS 💜`;
+  return `Feliz aniversário, ${nomeCrianca}! 🎉🎂\n${nomeCliente}, passando aqui para desejar um dia maravilhoso! Que seja um ano cheio de descobertas e brincadeiras incríveis ✨\nTemos novidades na loja que vai amar! Quer dar uma olhadinha? 🎁\nCom carinho, equipe ZASTRAS ❤️`;
 }
 export function getMensagem4(nomeCliente: string, nomeCrianca?: string): string {
   const crianca = nomeCrianca ? `Para o ${nomeCrianca}, preparamos` : 'Preparamos';
-  return `Oi ${nomeCliente}! 💜 O Dia das Crianças está chegando! 🎉\nE claro que a ZASTRAS não podia deixar passar.\n${crianca} seleções especiais de brinquedos e livros educativos!\nQuer passar na loja ou quer que eu envie fotos das novidades?\nBeijos, equipe ZASTRAS 💜`;
+  return `Oi ${nomeCliente}! ❤️ O Dia das Crianças está chegando! 🎉\nE claro que a ZASTRAS não podia deixar passar.\n${crianca} seleções especiais de brinquedos e livros educativos!\nQuer passar na loja ou quer que eu envie fotos das novidades?\nBeijos, equipe ZASTRAS ❤️`;
 }
 export function getMensagem5(nomeCliente: string, nomeCrianca: string, cupom: string): string {
-  return `Recebemos, ${nomeCliente}! ✅\nDados do ${nomeCrianca} cadastrados com sucesso!\nAqui está seu cupom de 10%: ${cupom}\nÉ só mostrar no caixa da loja! 🎁\nBeijos, equipe ZASTRAS 💜`;
+  return `Recebemos, ${nomeCliente}! ✅\nDados do ${nomeCrianca} cadastrados com sucesso!\nAqui está seu cupom de 10%: ${cupom}\nÉ só mostrar no caixa da loja! 🎁\nBeijos, equipe ZASTRAS ❤️`;
 }
 export function getMensagemDesconto(nomeVendedor: string): string {
   return `Olá, tudo bem?\n\nAqui é ${nomeVendedor} da Zastras do Shopping Cidade Jardim.\n\nQueria saber se o presente que você escolheu fez sucesso por aí 😊\n\nQuando estiver pelo shopping, passe no quiosque para ver as novidades, sempre temos coisas bem legais chegando por aqui.\n\nAté o fim de março, nossos clientes que retornarem ganham 10% de desconto.\n\nE, se for mais fácil, também temos delivery.\n\nSerá um prazer receber você por aqui! ✨`;
